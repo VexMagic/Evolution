@@ -392,6 +392,10 @@ PrefabInstance:
       value: Collectable (2)
       objectReference: {fileID: 0}
     - target: {fileID: 4421614608181682862, guid: bcbd5b781f779904ca8927d9f698b094, type: 3}
+      propertyPath: hasArrow
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4421614608181682862, guid: bcbd5b781f779904ca8927d9f698b094, type: 3}
       propertyPath: direction
       value: 0
       objectReference: {fileID: 0}
@@ -454,7 +458,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4421614608181682862, guid: bcbd5b781f779904ca8927d9f698b094, type: 3}
       propertyPath: direction
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7573914088152662612, guid: bcbd5b781f779904ca8927d9f698b094, type: 3}
       propertyPath: m_LocalPosition.x
@@ -563,7 +567,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Sprite: {fileID: 302535158, guid: 2792c2b95e615f44e9382e28a08c9fda, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -633,8 +637,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 1780487154}
   renderer: {fileID: 1780487150}
+  tail: {fileID: 0}
+  straight: {fileID: 0}
+  turnL: {fileID: 0}
+  turnR: {fileID: 0}
   segmentPrefab: {fileID: 4359927819994882758, guid: af55736bda3661d44b44e13abb316ab1, type: 3}
-  startSegments: 3
+  startSegments: 7
   up: {fileID: -5347821631856759711, guid: f6ae0a8c0ad2e9e45b9c850c2bde3082, type: 3}
   down: {fileID: -6572872310164837272, guid: f6ae0a8c0ad2e9e45b9c850c2bde3082, type: 3}
   left: {fileID: -2986178473423078881, guid: f6ae0a8c0ad2e9e45b9c850c2bde3082, type: 3}
@@ -716,10 +724,6 @@ PrefabInstance:
     - target: {fileID: 468333941266560223, guid: bcbd5b781f779904ca8927d9f698b094, type: 3}
       propertyPath: m_Name
       value: Collectable
-      objectReference: {fileID: 0}
-    - target: {fileID: 4421614608181682862, guid: bcbd5b781f779904ca8927d9f698b094, type: 3}
-      propertyPath: direction
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7573914088152662612, guid: bcbd5b781f779904ca8927d9f698b094, type: 3}
       propertyPath: m_LocalPosition.x

@@ -6,17 +6,22 @@ using UnityEngine;
 public class Collectable : MonoBehaviour
 {
     [SerializeField] private Direction direction;
+    [SerializeField] private bool hasArrow = true;
     [SerializeField] private Transform arrow;
 
     public Direction Direction { get { return direction; } }
+    public bool HasArrow { get { return hasArrow; } }
 
     private void Start()
     {
+        if (!hasArrow)
+        {
+            arrow.gameObject.SetActive(false);
+            return;
+        }
+
         switch (direction)
         {
-            default:
-                arrow.gameObject.SetActive(false);
-                break;
             case Direction.Up:
                 arrow.eulerAngles = new Vector3(0, 0, 0);
                 break;
@@ -38,4 +43,4 @@ public class Collectable : MonoBehaviour
     }
 }
 
-public enum Direction { None, Up, Down, Left, Right }
+public enum Direction { Up, Left, Down, Right }

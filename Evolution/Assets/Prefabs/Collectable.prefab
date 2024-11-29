@@ -135,6 +135,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   direction: 0
+  hasArrow: 1
   arrow: {fileID: 4162139596726873069}
 --- !u!1 &5725425970393823238
 GameObject:

@@ -16,12 +16,17 @@ public class PlayerMovement : Segment
     private List<Segment> segmentData = new List<Segment>();
 
     private Vector2 lastPosition;
+    private Direction lastRotation;
+
+    private bool hasRecievedInput;
 
     private void Start()
     {
         lastPosition = rb.position;
+        lastRotation = rotation;
         for (int i = 0; i < startSegments; i++)
         {
+            lastPosition += new Vector2(0, -1);
             AddSegment();
         }
     }
@@ -47,8 +52,20 @@ public class PlayerMovement : Segment
         Debug.Log("Can't Move");
     }
 
-    private void Move(Vector2Int direction)
+    IEnumerator InputBuffer()
     {
+        yield return new WaitForFixedUpdate();
+        hasRecievedInput = false;
+    }
+
+    private void Move(Vector2Int direction, Direction newRotation)
+    {
+        if (hasRecievedInput)
+            return;
+
+        hasRecievedInput = true;
+        StartCoroutine(InputBuffer());
+
         Vector2 newPos = rb.position + direction;
 
         if (CheckForSegment(newPos))
@@ -61,18 +78,23 @@ public class PlayerMovement : Segment
         {
             if (i == 0)
             {
-                segmentData[0].RB.MovePosition(RB.position);
+                segmentData[0].transform.position = RB.position;
+                segmentData[0].SetDirection(rotation);
             }
             else
             {
+                segmentData[i].SetValues(segmentData[i - 1]);
                 if (i == segmentObjects.Count - 1)
                 {
                     lastPosition = segmentData[i].RB.position;
+                    lastRotation = segmentData[i].Rotation;
                 }
-                segmentData[i].RB.MovePosition(segmentData[i - 1].RB.position);
             }
         }
-        rb.MovePosition(newPos);
+        transform.position = newPos;
+        rotation = newRotation;
+        segmentData[0].SetDirection(rotation);
+
         UpdateSprite();
     }
 
@@ -80,7 +102,7 @@ public class PlayerMovement : Segment
     {
         foreach (var segment in segmentData)
         {
-            if (segment.RB.position == pos)
+            if (segment.RB.position == pos && !segment.IsTail)
             {
                 return true;
             }
@@ -99,7 +121,7 @@ public class PlayerMovement : Segment
         Segment segment = segmentObject.GetComponent<Segment>();
 
         Debug.Log(lastPosition);
-        segment.RB.MovePosition(lastPosition);
+        segment.transform.position = lastPosition;
 
         segment.SetTail(true);
 
@@ -110,7 +132,7 @@ public class PlayerMovement : Segment
 
     public override void UpdateSprite()
     {
-        renderer.color = Color.black;
+        UpdateRotation();
         foreach (var segment in segmentData)
         {
             segment.UpdateSprite();
@@ -125,7 +147,7 @@ public class PlayerMovement : Segment
             return;
         }
 
-        Move(new Vector2Int(0, 1));
+        Move(new Vector2Int(0, 1), Direction.Up);
     }
 
     private void MoveDown(InputAction.CallbackContext context)
@@ -136,7 +158,7 @@ public class PlayerMovement : Segment
             return;
         }
 
-        Move(new Vector2Int(0, -1));
+        Move(new Vector2Int(0, -1), Direction.Down);
     }
 
     private void MoveLeft(InputAction.CallbackContext context)
@@ -147,7 +169,7 @@ public class PlayerMovement : Segment
             return;
         }
 
-        Move(new Vector2Int(-1, 0));
+        Move(new Vector2Int(-1, 0), Direction.Left);
     }
 
     private void MoveRight(InputAction.CallbackContext context)
@@ -158,7 +180,7 @@ public class PlayerMovement : Segment
             return;
         }
 
-        Move(new Vector2Int(1, 0));
+        Move(new Vector2Int(1, 0), Direction.Right);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -167,6 +189,7 @@ public class PlayerMovement : Segment
         if (collectable != null)
         {
             AddSegment();
+            if (collectable.HasArrow)
             EnableDirection(collectable.Direction, false);
             collectable.PickUp();
         }
