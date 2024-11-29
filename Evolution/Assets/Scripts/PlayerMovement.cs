@@ -58,8 +58,10 @@ public class PlayerMovement : Segment
         hasRecievedInput = false;
     }
 
-    private void Move(Vector2Int direction, Direction newRotation)
+    private void Move( Direction newRotation)
     {
+        Vector2Int direction = DirectionToVector(newRotation);
+
         if (hasRecievedInput)
             return;
 
@@ -70,8 +72,11 @@ public class PlayerMovement : Segment
 
         if (CheckForSegment(newPos))
         {
-            CantMove();
-            return;
+            if ((int)rotation == ((int)newRotation + 2) % 4)
+                MoveBackwards();
+            else
+                CantMove();
+                return;
         }
 
         for (int i = segmentObjects.Count - 1; i >= 0; i--)
@@ -83,7 +88,7 @@ public class PlayerMovement : Segment
             }
             else
             {
-                segmentData[i].SetValues(segmentData[i - 1]);
+                segmentData[i].SetValues(segmentData[i - 1], true);
                 if (i == segmentObjects.Count - 1)
                 {
                     lastPosition = segmentData[i].RB.position;
@@ -98,11 +103,36 @@ public class PlayerMovement : Segment
         UpdateSprite();
     }
 
+    private void MoveBackwards()
+    {
+        transform.position = segmentData[0].RB.position;
+        
+        if (segmentData[0].IsTail)
+            rotation = segmentData[0].Rotation;
+        else
+            rotation = segmentData[0].PreviousRotation;
+
+        for (int i = 0; i < segmentObjects.Count; i++)
+        {
+            if (i == segmentObjects.Count - 1)
+            {
+                segmentData[i].transform.position = segmentData[i].RB.position + DirectionToVector((Direction)(((int)segmentData[i].Rotation + 2) % 4));
+                segmentData[i].UpdateSprite();
+            }
+            else
+            {
+                segmentData[i].SetValues(segmentData[i + 1], false);
+            }
+        }
+
+        UpdateRotation();
+    }
+
     private bool CheckForSegment(Vector2 pos)
     {
         foreach (var segment in segmentData)
         {
-            if (segment.RB.position == pos && !segment.IsTail)
+            if (segment.RB.position == pos && (!segment.IsTail || segmentData.Count == 1))
             {
                 return true;
             }
@@ -147,7 +177,7 @@ public class PlayerMovement : Segment
             return;
         }
 
-        Move(new Vector2Int(0, 1), Direction.Up);
+        Move(Direction.Up);
     }
 
     private void MoveDown(InputAction.CallbackContext context)
@@ -158,7 +188,7 @@ public class PlayerMovement : Segment
             return;
         }
 
-        Move(new Vector2Int(0, -1), Direction.Down);
+        Move(Direction.Down);
     }
 
     private void MoveLeft(InputAction.CallbackContext context)
@@ -169,7 +199,7 @@ public class PlayerMovement : Segment
             return;
         }
 
-        Move(new Vector2Int(-1, 0), Direction.Left);
+        Move(Direction.Left);
     }
 
     private void MoveRight(InputAction.CallbackContext context)
@@ -180,7 +210,7 @@ public class PlayerMovement : Segment
             return;
         }
 
-        Move(new Vector2Int(1, 0), Direction.Right);
+        Move(Direction.Right);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -189,6 +219,13 @@ public class PlayerMovement : Segment
         if (collectable != null)
         {
             AddSegment();
+
+            //if (segmentData.Count == 1)
+            {
+                segmentData[^1].transform.position = segmentData[^2].RB.position + DirectionToVector((Direction)(((int)segmentData[^2].PreviousRotation + 2) % 4));
+                segmentData[^1].SetDirection(segmentData[^2].PreviousRotation);
+            }
+
             if (collectable.HasArrow)
             EnableDirection(collectable.Direction, false);
             collectable.PickUp();

@@ -17,17 +17,31 @@ public class Segment : MonoBehaviour
     private Direction previousRotation;
 
     public Direction Rotation { get { return rotation; } }
+    public Direction PreviousRotation { get { return previousRotation; } }
 
     public void SetTail(bool isTail)
     {
         this.isTail = isTail;
     }
 
-    public void SetValues(Segment segment)
+    public void SetValues(Segment segment, bool forward)
     {
         transform.position = segment.RB.position;
-        previousRotation = rotation;
-        rotation = segment.Rotation;
+
+        if (forward)
+        {
+            previousRotation = rotation;
+            rotation = segment.Rotation;
+        }
+        else
+        {
+            rotation = previousRotation;
+            if (segment.isTail)
+                previousRotation = segment.Rotation;
+            else
+                previousRotation = segment.PreviousRotation;
+        }
+
         UpdateSprite();
     }
 
@@ -79,6 +93,34 @@ public class Segment : MonoBehaviour
             case Direction.Right:
                 transform.eulerAngles = new Vector3(0, 0, -90);
                 break;
+        }
+    }
+
+    protected Vector2Int DirectionToVector(Direction direction)
+    {
+        switch (direction)
+        {
+            case Direction.Up:
+                return new Vector2Int(0, 1);
+            case Direction.Down:
+                return new Vector2Int(0, -1);
+            case Direction.Left:
+                return new Vector2Int(-1, 0);
+            case Direction.Right:
+                return new Vector2Int(1, 0);
+        }
+        return new Vector2Int(0, 0);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (!isTail)
+            return;
+
+        Collectable collectable = collision.GetComponent<Collectable>();
+        if (collectable != null)
+        {
+            collectable.transform.position = collectable.transform.position + (Vector3)(Vector2)DirectionToVector((Direction)(((int)rotation + 2) % 4));
         }
     }
 }
