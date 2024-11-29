@@ -49,7 +49,6 @@ public class PlayerMovement : Segment
 
     private void CantMove()
     {
-        Debug.Log("Can't Move");
     }
 
     IEnumerator InputBuffer()
@@ -150,7 +149,6 @@ public class PlayerMovement : Segment
         GameObject segmentObject = Instantiate(segmentPrefab);
         Segment segment = segmentObject.GetComponent<Segment>();
 
-        Debug.Log(lastPosition);
         segment.transform.position = lastPosition;
 
         segment.SetTail(true);

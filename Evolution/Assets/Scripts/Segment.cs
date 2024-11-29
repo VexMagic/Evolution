@@ -120,7 +120,9 @@ public class Segment : MonoBehaviour
         Collectable collectable = collision.GetComponent<Collectable>();
         if (collectable != null)
         {
-            collectable.transform.position = collectable.transform.position + (Vector3)(Vector2)DirectionToVector((Direction)(((int)rotation + 2) % 4));
+            Direction tempDirection = (Direction)(((int)rotation + 2) % 4);
+
+            collectable.Move(DirectionToVector(tempDirection));
         }
     }
 }

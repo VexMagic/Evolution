@@ -9,11 +9,18 @@ public class Collectable : MonoBehaviour
     [SerializeField] private bool hasArrow = true;
     [SerializeField] private Transform arrow;
 
+    private bool hasMoved;
+    private Vector2Int lastMovedDirection;
+
     public Direction Direction { get { return direction; } }
     public bool HasArrow { get { return hasArrow; } }
+    public Vector2Int LastDirection { get { return lastMovedDirection; } }
+
 
     private void Start()
     {
+        hasMoved = false;
+
         if (!hasArrow)
         {
             arrow.gameObject.SetActive(false);
@@ -40,6 +47,34 @@ public class Collectable : MonoBehaviour
     public void PickUp()
     {
         Destroy(gameObject);
+    }
+
+    public void Move(Vector2Int movement)
+    {
+        lastMovedDirection = movement;
+        transform.position += (Vector3)(Vector2)movement;
+        hasMoved = true;
+        StartCoroutine(MovementBuffer());
+    }
+
+    IEnumerator MovementBuffer()
+    {
+        for (int i = 0; i < 3; i++) 
+            yield return new WaitForFixedUpdate();
+
+        hasMoved = false;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (hasMoved)
+            return;
+
+        Collectable collectable = collision.GetComponent<Collectable>();
+        if (collectable != null)
+        {
+            Move(collectable.LastDirection);
+        }
     }
 }
 
