@@ -14,6 +14,9 @@ public class Collectable : MonoBehaviour
     {
         switch (direction)
         {
+            default:
+                arrow.gameObject.SetActive(false);
+                break;
             case Direction.Up:
                 arrow.eulerAngles = new Vector3(0, 0, 0);
                 break;
@@ -35,4 +38,4 @@ public class Collectable : MonoBehaviour
     }
 }
 
-public enum Direction { Up, Down, Left, Right }
+public enum Direction { None, Up, Down, Left, Right }
