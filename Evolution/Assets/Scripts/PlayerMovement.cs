@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEditor.PlayerSettings;
 
 public class PlayerMovement : Segment
 {
@@ -19,6 +20,7 @@ public class PlayerMovement : Segment
 
     private bool hasRecievedInput;
     private bool isShaking;
+    private bool isDead;
 
     private Coroutine shakeCoroutine;
 
@@ -89,6 +91,9 @@ public class PlayerMovement : Segment
 
     private void Move( Direction newRotation)
     {
+        if (hasRecievedInput || isDead)
+            return;
+
         if (isShaking)
         {
             StopCoroutine(shakeCoroutine);
@@ -97,9 +102,6 @@ public class PlayerMovement : Segment
         }
 
         Vector2Int direction = DirectionToVector(newRotation);
-
-        if (hasRecievedInput)
-            return;
 
         hasRecievedInput = true;
         StartCoroutine(InputBuffer());
@@ -112,7 +114,13 @@ public class PlayerMovement : Segment
                 MoveBackwards();
             else
                 CantMove();
-                return;
+            return;
+        }
+
+        if (GridManager.instance.IsPointInsideWall(newPos))
+        {
+            CantMove();
+            return;
         }
 
         for (int i = segmentObjects.Count - 1; i >= 0; i--)
@@ -137,10 +145,26 @@ public class PlayerMovement : Segment
         segmentData[0].SetDirection(rotation);
 
         UpdateSprite();
+        CheckForHole();
     }
 
     private void MoveBackwards()
     {
+        Vector2 offset = DirectionToVector((Direction)(((int)segmentData[^1].Rotation + 2) % 4));
+        Vector2 newPos = segmentData[^1].RB.position + offset;
+
+        Vector2 tempPos = segmentData[^1].RB.position;
+
+        do
+        {
+            tempPos += offset;
+            if (GridManager.instance.IsPointInsideWall(tempPos))
+            {
+                CantMove();
+                return;
+            }
+        } while (CollectableManager.instance.CollectableAtPos(tempPos));
+
         transform.position = segmentData[0].RB.position;
         
         if (segmentData[0].IsTail)
@@ -152,7 +176,7 @@ public class PlayerMovement : Segment
         {
             if (i == segmentObjects.Count - 1)
             {
-                segmentData[i].transform.position = segmentData[i].RB.position + DirectionToVector((Direction)(((int)segmentData[i].Rotation + 2) % 4));
+                segmentData[i].transform.position = newPos;
                 segmentData[i].UpdateSprite();
             }
             else
@@ -162,6 +186,7 @@ public class PlayerMovement : Segment
         }
 
         UpdateRotation();
+        CheckForHole();
     }
 
     private bool CheckForSegment(Vector2 pos)
@@ -174,6 +199,29 @@ public class PlayerMovement : Segment
             }
         }
         return false;
+    }
+
+    private void CheckForHole()
+    {
+        if (GridManager.instance.GetPointCellEffect(transform.position) == TileInfo.TileEffect.Hole)
+        {
+            foreach(var segment in segmentData)
+            {
+                if (GridManager.instance.GetPointCellEffect(segment.transform.position) != TileInfo.TileEffect.Hole)
+                    return;
+            }
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        isDead = true;
+        renderer.color = Color.gray;
+        foreach(var segment in segmentData)
+        {
+            segment.Renderer.color = Color.gray;
+        }
     }
 
     private void AddSegment()

@@ -19,6 +19,8 @@ public class Collectable : MonoBehaviour
 
     private void Start()
     {
+        CollectableManager.instance.AddCollectable(this);
+
         hasMoved = false;
 
         if (!hasArrow)
@@ -75,6 +77,11 @@ public class Collectable : MonoBehaviour
         {
             Move(collectable.LastDirection);
         }
+    }
+
+    private void OnDestroy()
+    {
+        CollectableManager.instance.RemoveCollectable(this);
     }
 }
 

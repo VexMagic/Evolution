@@ -10,6 +10,7 @@ public class Segment : MonoBehaviour
     [SerializeField] private Sprite straight, turnL, turnR;
 
     public Rigidbody2D RB {  get { return rb; } }
+    public SpriteRenderer Renderer {  get { return renderer; } }
     public bool IsTail {  get { return isTail; } }
 
     private bool isTail;
