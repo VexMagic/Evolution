@@ -126,6 +126,9 @@ public class Segment : MonoBehaviour
         Collectable collectable = collision.GetComponent<Collectable>();
         if (collectable != null)
         {
+            if (collectable.IsDead)
+                return;
+            
             Direction tempDirection = (Direction)(((int)rotation + 2) % 4);
 
             collectable.Move(DirectionToVector(tempDirection));

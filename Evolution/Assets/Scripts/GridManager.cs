@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -21,7 +22,6 @@ public class GridManager : MonoBehaviour
         }
         instance = this;
         allTileData = Resources.LoadAll<TileInfo>("");
-        Debug.Log(allTileData.Length);
         CreateTileDataDictionary();
     }
 
@@ -59,5 +59,17 @@ public class GridManager : MonoBehaviour
             return dataFromTiles[tile].effect;
         }
         return TileInfo.TileEffect.None;
+    }
+
+    public bool IsHole(Vector2 pos)
+    {
+        bool isFilled = false;
+        Collectable collectable = CollectableManager.instance.CollectableAtPos(pos);
+        if (collectable != null)
+        {
+            isFilled = collectable.IsDead;
+        }
+
+        return GetPointCellEffect(pos) == TileInfo.TileEffect.Hole && !isFilled;
     }
 }

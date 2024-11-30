@@ -999,13 +999,13 @@ Tilemap:
   - first: {x: -3, y: -1, z: 0}
     second:
       serializedVersion: 2
-      m_TileIndex: 1
-      m_TileSpriteIndex: 1
+      m_TileIndex: 0
+      m_TileSpriteIndex: 0
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
-      m_AllTileFlags: 1
+      m_AllTileFlags: 2147483649
   - first: {x: -2, y: -1, z: 0}
     second:
       serializedVersion: 2
@@ -1179,13 +1179,13 @@ Tilemap:
   - first: {x: -3, y: 0, z: 0}
     second:
       serializedVersion: 2
-      m_TileIndex: 1
-      m_TileSpriteIndex: 1
+      m_TileIndex: 0
+      m_TileSpriteIndex: 0
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
-      m_AllTileFlags: 1
+      m_AllTileFlags: 2147483649
   - first: {x: -2, y: 0, z: 0}
     second:
       serializedVersion: 2
@@ -1359,13 +1359,13 @@ Tilemap:
   - first: {x: -3, y: 1, z: 0}
     second:
       serializedVersion: 2
-      m_TileIndex: 1
-      m_TileSpriteIndex: 1
+      m_TileIndex: 0
+      m_TileSpriteIndex: 0
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
-      m_AllTileFlags: 1
+      m_AllTileFlags: 2147483649
   - first: {x: -2, y: 1, z: 0}
     second:
       serializedVersion: 2
@@ -2018,16 +2018,16 @@ Tilemap:
       m_AllTileFlags: 2147483649
   m_AnimatedTiles: {}
   m_TileAssetArray:
-  - m_RefCount: 55
+  - m_RefCount: 58
     m_Data: {fileID: 11400000, guid: 3af7c492dde48da4b92082f8bc4b5709, type: 2}
-  - m_RefCount: 119
+  - m_RefCount: 116
     m_Data: {fileID: 11400000, guid: f1663bd81b464b048a4da4390bc7e761, type: 2}
   - m_RefCount: 6
     m_Data: {fileID: 11400000, guid: d9a61c25fba272044a8bfced406c19e2, type: 2}
   m_TileSpriteArray:
-  - m_RefCount: 55
+  - m_RefCount: 58
     m_Data: {fileID: -312765664, guid: 4d2440f82d494954cac0bd0d5184d088, type: 3}
-  - m_RefCount: 119
+  - m_RefCount: 116
     m_Data: {fileID: -261149181, guid: 4d2440f82d494954cac0bd0d5184d088, type: 3}
   - m_RefCount: 6
     m_Data: {fileID: 344096317, guid: 4d2440f82d494954cac0bd0d5184d088, type: 3}
@@ -2170,9 +2170,9 @@ CompositeCollider2D:
         Y: -40000000
     - - X: -10000000
         Y: 20000000
-      - X: -20000000
+      - X: -30000000
         Y: 20000000
-      - X: -20000000
+      - X: -30000000
         Y: -10000000
       - X: -10000000
         Y: -10000000
@@ -2187,8 +2187,8 @@ CompositeCollider2D:
       - {x: 8, y: 4}
       - {x: 8, y: -4}
     - - {x: -1, y: 2}
-      - {x: -2, y: 2}
-      - {x: -2, y: -1}
+      - {x: -3, y: 2}
+      - {x: -3, y: -1}
       - {x: -1, y: -1}
   m_VertexDistance: 0.0005
   m_OffsetDistance: 0

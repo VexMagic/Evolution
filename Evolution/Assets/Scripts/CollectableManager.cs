@@ -27,15 +27,15 @@ public class CollectableManager : MonoBehaviour
         collectables.Remove(collectable);
     }
 
-    public bool CollectableAtPos(Vector2 pos)
+    public Collectable CollectableAtPos(Vector2 pos)
     {
         foreach (Collectable collectable in collectables)
         {
             if (collectable.GetComponent<Collider2D>().bounds.Contains((Vector3)pos))
             {
-                return true;
+                return collectable;
             }
         }
-        return false;
+        return null;
     }
 }

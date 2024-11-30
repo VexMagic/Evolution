@@ -11,11 +11,12 @@ public class Collectable : MonoBehaviour
 
     private bool hasMoved;
     private Vector2Int lastMovedDirection;
+    private bool isDead;
 
     public Direction Direction { get { return direction; } }
     public bool HasArrow { get { return hasArrow; } }
     public Vector2Int LastDirection { get { return lastMovedDirection; } }
-
+    public bool IsDead { get { return isDead; } }
 
     private void Start()
     {
@@ -56,6 +57,12 @@ public class Collectable : MonoBehaviour
         lastMovedDirection = movement;
         transform.position += (Vector3)(Vector2)movement;
         hasMoved = true;
+        if (GridManager.instance.IsHole(transform.position))
+        {
+            isDead = true;
+            GetComponent<SpriteRenderer>().color = Color.gray;
+            GetComponent<SpriteRenderer>().sortingOrder--;
+        }
         StartCoroutine(MovementBuffer());
     }
 
@@ -69,7 +76,7 @@ public class Collectable : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (hasMoved)
+        if (hasMoved || isDead)
             return;
 
         Collectable collectable = collision.GetComponent<Collectable>();

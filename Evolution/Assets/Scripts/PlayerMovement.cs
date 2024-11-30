@@ -163,7 +163,7 @@ public class PlayerMovement : Segment
                 CantMove();
                 return;
             }
-        } while (CollectableManager.instance.CollectableAtPos(tempPos));
+        } while (CollectableManager.instance.CollectableAtPos(tempPos) != null);
 
         transform.position = segmentData[0].RB.position;
         
@@ -203,11 +203,11 @@ public class PlayerMovement : Segment
 
     private void CheckForHole()
     {
-        if (GridManager.instance.GetPointCellEffect(transform.position) == TileInfo.TileEffect.Hole)
+        if (GridManager.instance.IsHole(transform.position))
         {
             foreach(var segment in segmentData)
             {
-                if (GridManager.instance.GetPointCellEffect(segment.transform.position) != TileInfo.TileEffect.Hole)
+                if (!GridManager.instance.IsHole(segment.transform.position))
                     return;
             }
             Die();
@@ -301,6 +301,9 @@ public class PlayerMovement : Segment
         Collectable collectable = collision.GetComponent<Collectable>();
         if (collectable != null)
         {
+            if (collectable.IsDead)
+                return;
+
             AddSegment();
 
             //if (segmentData.Count == 1)
