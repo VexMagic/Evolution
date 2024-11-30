@@ -13,6 +13,8 @@ public class Collectable : MonoBehaviour
     private Vector2Int lastMovedDirection;
     private bool isDead;
 
+    private List<CollectableMoveData> collectableMoves = new List<CollectableMoveData>();
+
     public Direction Direction { get { return direction; } }
     public bool HasArrow { get { return hasArrow; } }
     public Vector2Int LastDirection { get { return lastMovedDirection; } }
@@ -47,9 +49,28 @@ public class Collectable : MonoBehaviour
         }
     }
 
+    public void StoreMoveData()
+    {
+        collectableMoves.Add(new CollectableMoveData(transform.position, isDead, !gameObject.activeSelf));
+    }
+
+    public void LoadLastMoveData()
+    {
+        transform.position = collectableMoves[^1].Position;
+        isDead = collectableMoves[^1].IsDead;
+        gameObject.SetActive(!collectableMoves[^1].IsEaten);
+
+        if (IsDead)
+            GetComponent<SpriteRenderer>().color = Color.gray;
+        else
+            GetComponent<SpriteRenderer>().color = Color.white;
+
+        collectableMoves.RemoveAt(collectableMoves.Count - 1);
+    }
+
     public void PickUp()
     {
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 
     public void Move(Vector2Int movement)

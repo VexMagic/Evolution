@@ -6,11 +6,15 @@ using static UnityEditor.PlayerSettings;
 
 public class PlayerMovement : Segment
 {
+    public static PlayerMovement instance;
+
     [SerializeField] private GameObject segmentPrefab;
     [SerializeField] private int startSegments;
 
     [SerializeField] private InputActionReference up, down, left, rigth;
     [SerializeField] private bool canMoveUp, canMoveDown, canMoveLeft, canMoveRight;
+
+    [SerializeField] private InputActionReference undo, reset;
 
     private List<GameObject> segmentObjects = new List<GameObject>();
     private List<Segment> segmentData = new List<Segment>();
@@ -21,8 +25,14 @@ public class PlayerMovement : Segment
     private bool hasRecievedInput;
     private bool isShaking;
     private bool isDead;
+    private bool reseting;
 
     private Coroutine shakeCoroutine;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     private void Start()
     {
@@ -41,6 +51,8 @@ public class PlayerMovement : Segment
         down.action.performed += MoveDown;
         left.action.performed += MoveLeft;
         rigth.action.performed += MoveRight;
+        undo.action.performed += Undo;
+        reset.action.performed += Reset;
     }
 
     private void OnDisable()
@@ -49,6 +61,22 @@ public class PlayerMovement : Segment
         down.action.performed -= MoveDown;
         left.action.performed -= MoveLeft;
         rigth.action.performed -= MoveRight;
+        undo.action.performed -= Undo;
+        reset.action.performed -= Reset;
+    }
+
+    public void RemoveSegment(Segment segment)
+    {
+        for (int i = 0; i < segmentData.Count; i++)
+        {
+            if (segmentData[i] == segment)
+            {
+                segmentData.RemoveAt(i);
+                segmentObjects.RemoveAt(i);
+                return;
+            }
+        }
+        UpdateSprite();
     }
 
     private void CantMove()
@@ -91,7 +119,7 @@ public class PlayerMovement : Segment
 
     private void Move( Direction newRotation)
     {
-        if (hasRecievedInput || isDead)
+        if (hasRecievedInput || isDead || reseting)
             return;
 
         if (isShaking)
@@ -123,8 +151,11 @@ public class PlayerMovement : Segment
             return;
         }
 
+        CollectableManager.instance.StoreData();
+
         for (int i = segmentObjects.Count - 1; i >= 0; i--)
         {
+            segmentData[i].StoreMoveData();
             if (i == 0)
             {
                 segmentData[0].transform.position = RB.position;
@@ -140,6 +171,7 @@ public class PlayerMovement : Segment
                 }
             }
         }
+        StoreMoveData();
         transform.position = newPos;
         rotation = newRotation;
         segmentData[0].SetDirection(rotation);
@@ -164,6 +196,10 @@ public class PlayerMovement : Segment
                 return;
             }
         } while (CollectableManager.instance.CollectableAtPos(tempPos) != null);
+        
+        CollectableManager.instance.StoreData();
+
+        StoreMoveData();
 
         transform.position = segmentData[0].RB.position;
         
@@ -174,6 +210,7 @@ public class PlayerMovement : Segment
 
         for (int i = 0; i < segmentObjects.Count; i++)
         {
+            segmentData[i].StoreMoveData();
             if (i == segmentObjects.Count - 1)
             {
                 segmentData[i].transform.position = newPos;
@@ -294,6 +331,51 @@ public class PlayerMovement : Segment
         }
 
         Move(Direction.Right);
+    }
+
+    private void Undo(InputAction.CallbackContext context)
+    {
+        if (segmentMoves.Count == 0)
+            return;
+
+        UndoLastMove();
+    }
+
+    private void UndoLastMove()
+    {
+        isDead = false;
+
+        LoadLastMoveData();
+        foreach (var segment in segmentData)
+        {
+            segment.LoadLastMoveData();
+        }
+
+        CollectableManager.instance.Undo();
+    }
+
+    private void Reset(InputAction.CallbackContext context)
+    {
+        StartCoroutine(ResetToStart());
+    }
+
+    IEnumerator ResetToStart()
+    {
+        reseting = true;
+
+        float resetSpeed = 0.1f;
+
+        while (segmentMoves.Count > 0)
+        {
+            UndoLastMove();
+            yield return new WaitForSeconds(resetSpeed);
+            if (resetSpeed > 0.03f)
+            {
+                resetSpeed -= 0.002f;
+            }
+        }
+
+        reseting = false;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

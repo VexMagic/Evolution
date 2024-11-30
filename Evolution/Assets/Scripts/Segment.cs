@@ -9,16 +9,17 @@ public class Segment : MonoBehaviour
     [SerializeField] private Sprite tail;
     [SerializeField] private Sprite straight, turnL, turnR;
 
-    public Rigidbody2D RB {  get { return rb; } }
-    public SpriteRenderer Renderer {  get { return renderer; } }
-    public bool IsTail {  get { return isTail; } }
-
     private bool isTail;
     protected Direction rotation;
     private Direction previousRotation;
 
+    protected List<SegmentMoveData> segmentMoves = new List<SegmentMoveData>();
+
     public Direction Rotation { get { return rotation; } }
     public Direction PreviousRotation { get { return previousRotation; } }
+    public Rigidbody2D RB { get { return rb; } }
+    public SpriteRenderer Renderer { get { return renderer; } }
+    public bool IsTail { get { return isTail; } }
 
     public void SetTail(bool isTail)
     {
@@ -56,6 +57,30 @@ public class Segment : MonoBehaviour
     public virtual void SetShakeOffset(Vector2 offeset)
     {
         renderer.transform.localPosition = offeset;
+    }
+
+    public void StoreMoveData()
+    {
+        segmentMoves.Add(new SegmentMoveData(transform.position, rotation, previousRotation, isTail));
+    }
+
+    public void LoadLastMoveData()
+    {
+        if (segmentMoves.Count == 0)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        renderer.color = Color.white;
+
+        transform.position = segmentMoves[^1].Position;
+        rotation = segmentMoves[^1].Rotation;
+        previousRotation = segmentMoves[^1].PreviousRotation;
+        isTail = segmentMoves[^1].IsTail;
+
+        segmentMoves.RemoveAt(segmentMoves.Count - 1);
+        UpdateSprite();
     }
 
     public virtual void UpdateSprite()
@@ -133,5 +158,10 @@ public class Segment : MonoBehaviour
 
             collectable.Move(DirectionToVector(tempDirection));
         }
+    }
+
+    private void OnDestroy()
+    {
+        PlayerMovement.instance.RemoveSegment(this);
     }
 }

@@ -94,6 +94,8 @@ MonoBehaviour:
   canMoveDown: 1
   canMoveLeft: 1
   canMoveRight: 1
+  undo: {fileID: 8865872804650574140, guid: f6ae0a8c0ad2e9e45b9c850c2bde3082, type: 3}
+  reset: {fileID: 6545396564379635340, guid: f6ae0a8c0ad2e9e45b9c850c2bde3082, type: 3}
 --- !u!50 &3019216197098917402
 Rigidbody2D:
   serializedVersion: 4
@@ -227,7 +229,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 466601217
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 302535158, guid: 2792c2b95e615f44e9382e28a08c9fda, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

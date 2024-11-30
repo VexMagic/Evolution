@@ -38,4 +38,20 @@ public class CollectableManager : MonoBehaviour
         }
         return null;
     }
+
+    public void StoreData()
+    {
+        foreach (var collectable in collectables)
+        {
+            collectable.StoreMoveData();
+        }
+    }
+
+    public void Undo()
+    {
+        foreach (var collectable in collectables)
+        {
+            collectable.LoadLastMoveData();
+        }
+    }
 }
