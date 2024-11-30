@@ -14,4 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   allTiles:
   - {fileID: 11400000, guid: d9a61c25fba272044a8bfced406c19e2, type: 2}
+  - {fileID: 11400000, guid: 94f9d833a3f618949a0ca3862de58054, type: 2}
   effect: 1

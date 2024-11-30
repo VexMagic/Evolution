@@ -12,9 +12,11 @@ public class PlayerMovement : Segment
     [SerializeField] private int startSegments;
 
     [SerializeField] private InputActionReference up, down, left, rigth;
+    [SerializeField] private InputActionReference undo, reset;
+
     [SerializeField] private bool canMoveUp, canMoveDown, canMoveLeft, canMoveRight;
 
-    [SerializeField] private InputActionReference undo, reset;
+    [SerializeField] private Direction startRotation;
 
     private List<GameObject> segmentObjects = new List<GameObject>();
     private List<Segment> segmentData = new List<Segment>();
@@ -36,11 +38,15 @@ public class PlayerMovement : Segment
 
     private void Start()
     {
+        rotation = startRotation;
+
+        Vector2 offset = -DirectionToVector(rotation);
+
         lastPosition = rb.position;
         lastRotation = rotation;
         for (int i = 0; i < startSegments; i++)
         {
-            lastPosition += new Vector2(0, -1);
+            lastPosition += offset;
             AddSegment();
         }
     }
@@ -273,6 +279,10 @@ public class PlayerMovement : Segment
 
         segment.transform.position = lastPosition;
 
+        //do this twice so the segments aren't curved
+        segment.SetDirection(lastRotation);
+        segment.SetDirection(lastRotation);
+
         segment.SetTail(true);
 
         segmentObjects.Add(segmentObject);
@@ -369,7 +379,7 @@ public class PlayerMovement : Segment
         {
             UndoLastMove();
             yield return new WaitForSeconds(resetSpeed);
-            if (resetSpeed > 0.03f)
+            if (resetSpeed > 0.02f)
             {
                 resetSpeed -= 0.002f;
             }

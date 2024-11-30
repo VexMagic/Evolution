@@ -9,7 +9,7 @@ public class PuzzleExit : MonoBehaviour
     public string sceneName;
     public List<KeyCode> requiredKeySacrifices ;
     public int pointsToComplete;
-    bool isComplete = false;
+    bool isComplete = true;
     
     
 
@@ -39,15 +39,14 @@ public class PuzzleExit : MonoBehaviour
         }  
     }
 
-    void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if (isComplete == true)
         {
-            if (collision.gameObject == playerRef)
+            if (collision.gameObject == PlayerMovement.instance.gameObject)
             {
-                SceneManager.LoadScene(sceneName);
+                ProgressManager.instance.LoadNextLevel();
             }
         }
-        
     }
 }

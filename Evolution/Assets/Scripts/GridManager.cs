@@ -45,8 +45,18 @@ public class GridManager : MonoBehaviour
     public bool IsPointInsideWall(Vector2 pos)
     {
         Vector3Int cell = grid.WorldToCell(pos);
+        TileBase tileBase = grid.GetTile(cell);
 
-        return grid.GetTile<Tile>(cell).colliderType != Tile.ColliderType.None;
+        Tile.ColliderType colliderType = Tile.ColliderType.None;
+
+        if (tileBase is Tile)
+            colliderType = grid.GetTile<Tile>(cell).colliderType;
+        else if (tileBase is RuleTile)
+            colliderType = grid.GetTile<RuleTile>(cell).m_DefaultColliderType;
+        else if (tileBase is AnimatedTile)
+            colliderType = grid.GetTile<AnimatedTile>(cell).m_TileColliderType;
+
+        return colliderType != Tile.ColliderType.None;
     }
 
     public TileInfo.TileEffect GetPointCellEffect(Vector2 pos)
