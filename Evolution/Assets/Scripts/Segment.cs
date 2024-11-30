@@ -52,6 +52,11 @@ public class Segment : MonoBehaviour
         UpdateSprite();
     }
 
+    public virtual void SetShakeOffset(Vector2 offeset)
+    {
+        renderer.transform.localPosition = offeset;
+    }
+
     public virtual void UpdateSprite()
     {
         UpdateRotation();
@@ -82,16 +87,16 @@ public class Segment : MonoBehaviour
         switch (rotation)
         {
             case Direction.Up:
-                transform.eulerAngles = new Vector3(0, 0, 0);
+                renderer.transform.eulerAngles = new Vector3(0, 0, 0);
                 break;
             case Direction.Down:
-                transform.eulerAngles = new Vector3(0, 0, 180);
+                renderer.transform.eulerAngles = new Vector3(0, 0, 180);
                 break;
             case Direction.Left:
-                transform.eulerAngles = new Vector3(0, 0, 90);
+                renderer.transform.eulerAngles = new Vector3(0, 0, 90);
                 break;
             case Direction.Right:
-                transform.eulerAngles = new Vector3(0, 0, -90);
+                renderer.transform.eulerAngles = new Vector3(0, 0, -90);
                 break;
         }
     }

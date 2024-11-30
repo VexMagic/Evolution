@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,6 +18,9 @@ public class PlayerMovement : Segment
     private Direction lastRotation;
 
     private bool hasRecievedInput;
+    private bool isShaking;
+
+    private Coroutine shakeCoroutine;
 
     private void Start()
     {
@@ -49,6 +51,34 @@ public class PlayerMovement : Segment
 
     private void CantMove()
     {
+        shakeCoroutine = StartCoroutine(ShakeAnimation());
+    }
+
+    IEnumerator ShakeAnimation()
+    {
+        isShaking = true;
+
+        float shakeSpeed = 0.05f;
+
+        for (int i = 0; i < 6; i++)
+        {
+            Vector2 shake = new Vector2(Random.Range(-shakeSpeed, shakeSpeed), Random.Range(-shakeSpeed, shakeSpeed));
+            SetShakeOffset(shake);
+            yield return new WaitForSeconds(0.025f);
+        }
+
+        SetShakeOffset(Vector2.zero);
+
+        isShaking = false;
+    }
+
+    public override void SetShakeOffset(Vector2 offset)
+    {
+        base.SetShakeOffset(offset);
+        foreach (var segment in segmentData)
+        {
+            segment.SetShakeOffset(offset);
+        }
     }
 
     IEnumerator InputBuffer()
@@ -59,6 +89,13 @@ public class PlayerMovement : Segment
 
     private void Move( Direction newRotation)
     {
+        if (isShaking)
+        {
+            StopCoroutine(shakeCoroutine);
+            SetShakeOffset(Vector2.zero);
+            isShaking = false;
+        }
+
         Vector2Int direction = DirectionToVector(newRotation);
 
         if (hasRecievedInput)
