@@ -46,7 +46,7 @@ public class PuzzleExit : MonoBehaviour
             if (collision.gameObject == PlayerMovement.instance.gameObject)
             {
                 AudioManager.instance.PlaySFX("goal");
-                ProgressManager.instance.LoadNextLevel();
+                TransitionManager.instance.FinishLevel();
             }
         }
     }
