@@ -364,6 +364,8 @@ public class PlayerMovement : Segment
         UndoLastMove();
     }
 
+    public int GetSegmentAmount() { return segmentData.Count; }
+
     private void UndoLastMove()
     {
         TransitionManager.instance.EnableUndo(false);

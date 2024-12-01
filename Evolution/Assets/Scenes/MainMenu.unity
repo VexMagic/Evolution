@@ -722,6 +722,8 @@ MonoBehaviour:
   levelNames:
   - Level 1
   - Level 2
+  - Level 2.1
+  - Level 2.5
   - Level 4
   - Level 3
   - Level 5
