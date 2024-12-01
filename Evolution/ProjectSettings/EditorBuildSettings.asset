@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Movement.unity
     guid: 05e512d8c3405544ab9b921bb64fa861
   - enabled: 1
-    path: Assets/Scenes/FirstMap.unity
-    guid: f48da101350398c459351a72c9b4c7f8
+    path: Assets/Scenes/You Win.unity
+    guid: 35de62a2f09ec9e4ab16e0f0ad9fb3b7
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: f6ae0a8c0ad2e9e45b9c850c2bde3082, type: 3}

@@ -22,13 +22,21 @@ public class ProgressManager : MonoBehaviour
     public void LoadSpecificLevel(int level)
     {
         currentLevel = level;
-        AudioManager.instance.PlayMusic(currentLevel);
-        SceneManager.LoadScene(levelNames[currentLevel]);
+        LoadLevel();
     }
 
     public void LoadNextLevel()
     {
         currentLevel++;
+        LoadLevel();
+    }
+
+    private void LoadLevel()
+    {
+        if (currentLevel == levelNames.Count - 1)
+        {
+            AudioManager.instance.End();
+        }
         AudioManager.instance.PlayMusic(currentLevel);
         SceneManager.LoadScene(levelNames[currentLevel]);
     }

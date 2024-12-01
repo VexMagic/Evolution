@@ -45,6 +45,13 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    public void End()
+    {
+        musicSource.volume = 0;
+        sfxSource.volume = 0;
+        pitchSource.volume = 0;
+    }
+
     public void PlayMusic(int index)
     {
         AudioClip sound = music[index % music.Count];
