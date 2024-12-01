@@ -270,6 +270,7 @@ public class PlayerMovement : Segment
 
     private void Die()
     {
+        TransitionManager.instance.EnableUndo(true);
         AudioManager.instance.PlaySFX("fall");
         isDead = true;
         renderer.color = Color.gray;
@@ -365,6 +366,7 @@ public class PlayerMovement : Segment
 
     private void UndoLastMove()
     {
+        TransitionManager.instance.EnableUndo(false);
         AudioManager.instance.PlaySFX("undo");
 
         isDead = false;

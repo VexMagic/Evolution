@@ -8,11 +8,17 @@ public class TransitionManager : MonoBehaviour
     public static TransitionManager instance;
 
     [SerializeField] private Animator animator;
+    [SerializeField] private GameObject undo;
 
     private void Awake()
     {
         instance = this;
         SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    public void EnableUndo(bool enable)
+    {
+        undo.SetActive(enable);
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
