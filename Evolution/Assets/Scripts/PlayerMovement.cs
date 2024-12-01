@@ -18,6 +18,8 @@ public class PlayerMovement : Segment
 
     [SerializeField] private Direction startRotation;
 
+    private List<CanMoveData> canMoves = new List<CanMoveData>();
+
     private List<GameObject> segmentObjects = new List<GameObject>();
     private List<Segment> segmentData = new List<Segment>();
 
@@ -87,6 +89,7 @@ public class PlayerMovement : Segment
 
     private void CantMove()
     {
+        AudioManager.instance.PlaySFX("no move");
         shakeCoroutine = StartCoroutine(ShakeAnimation());
     }
 
@@ -157,6 +160,7 @@ public class PlayerMovement : Segment
             return;
         }
 
+        AudioManager.instance.PlaySFX("move");
         CollectableManager.instance.StoreData();
 
         for (int i = segmentObjects.Count - 1; i >= 0; i--)
@@ -186,8 +190,16 @@ public class PlayerMovement : Segment
         CheckForHole();
     }
 
+    public override void StoreMoveData()
+    {
+        base.StoreMoveData();
+        canMoves.Add(new CanMoveData(canMoveUp, canMoveDown, canMoveLeft, canMoveRight));
+    }
+
     private void MoveBackwards()
     {
+        AudioManager.instance.PlaySFX("move");
+
         Vector2 offset = DirectionToVector((Direction)(((int)segmentData[^1].Rotation + 2) % 4));
         Vector2 newPos = segmentData[^1].RB.position + offset;
 
@@ -259,6 +271,7 @@ public class PlayerMovement : Segment
 
     private void Die()
     {
+        AudioManager.instance.PlaySFX("fall");
         isDead = true;
         renderer.color = Color.gray;
         foreach(var segment in segmentData)
@@ -353,6 +366,8 @@ public class PlayerMovement : Segment
 
     private void UndoLastMove()
     {
+        AudioManager.instance.PlaySFX("undo");
+
         isDead = false;
 
         LoadLastMoveData();
@@ -362,6 +377,18 @@ public class PlayerMovement : Segment
         }
 
         CollectableManager.instance.Undo();
+    }
+
+    public override void LoadLastMoveData()
+    {
+        base.LoadLastMoveData();
+
+        canMoveUp = canMoves[^1].Up;
+        canMoveDown = canMoves[^1].Down;
+        canMoveLeft = canMoves[^1].Left;
+        canMoveRight = canMoves[^1].Right;
+
+        canMoves.RemoveAt(canMoves.Count - 1);
     }
 
     private void Reset(InputAction.CallbackContext context)

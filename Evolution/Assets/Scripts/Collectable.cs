@@ -70,6 +70,7 @@ public class Collectable : MonoBehaviour
 
     public void PickUp()
     {
+        AudioManager.instance.PlaySFX("eat");
         gameObject.SetActive(false);
     }
 

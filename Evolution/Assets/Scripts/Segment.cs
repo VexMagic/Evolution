@@ -59,12 +59,12 @@ public class Segment : MonoBehaviour
         renderer.transform.localPosition = offeset;
     }
 
-    public void StoreMoveData()
+    public virtual void StoreMoveData()
     {
         segmentMoves.Add(new SegmentMoveData(transform.position, rotation, previousRotation, isTail));
     }
 
-    public void LoadLastMoveData()
+    public virtual void LoadLastMoveData()
     {
         if (segmentMoves.Count == 0)
         {
